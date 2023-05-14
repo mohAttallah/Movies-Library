@@ -145,6 +145,64 @@ async function handletop(req, res) {
   });
 }
 
-app.listen(PORT, () => {
-  console.log(`Up and Running on port ${PORT}`);
+// app.listen(PORT, () => {
+//   console.log(`Up and Running on port ${PORT}`);
+// });
+
+// Lab 12 End
+app.use(errorHandler);
+function errorHandler(error, req, res, next) {
+  res.status(500).json({
+    code: 500,
+    message: error.message || error,
+  });
+}
+
+// Lab 13 Start
+//-------------------------------------------------------------
+const pg = require("pg");
+const client = new pg.Client(process.env.DBURL);
+app.post("/addMovie", handleAddMovieDB);
+app.get("/getMovies", handleMovieDB);
+
+function handleMovieDB(req, res, next) {
+  const sql = `select * from movie_libarys`;
+  client
+    .query(sql)
+    .then((data) => {
+      res.json({
+        count: data.rowCount,
+        data: data.rows,
+      });
+    })
+    .catch((err) => {
+      errorHandler(err, req, res, next);
+    });
+}
+
+function handleAddMovieDB(req, res, next) {
+  const userInput = req.body;
+  const sql = `insert into movie_libarys(title, poster_path, image) values($1, $2, $3) returning *`;
+
+  const handleValueFromUser = [
+    userInput.title,
+    userInput.poster_path,
+    userInput.image,
+  ];
+
+  client
+    .query(sql, handleValueFromUser)
+    .then((data) => {
+      res.status(201).json(data.rows);
+    })
+    .catch((err) => {
+      errorHandler(err, req, res, next);
+    });
+}
+
+client.connect().then((con) => {
+  console.log(con);
+  app.listen(PORT, () => {
+    console.log(`Up and Running on port ${PORT}`);
+  });
 });
