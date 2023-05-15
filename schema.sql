@@ -6,3 +6,5 @@ create table if not exists movie_libarys (
 );
 
 insert into movie_libarys(title, poster_path,image) values('test' ,'anything', ' http://mohAttallah.com')
+UPDATE movie_libarys SET comments = 'new comments' WHERE id = movie_id;
+DELETE FROM movie_libarys WHERE id = movie_id;
