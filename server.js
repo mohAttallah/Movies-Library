@@ -27,6 +27,7 @@ app.get("/", handleMovie);
 app.get("/favorite", handelFavorite);
 
 function handleMovie(req, res) {
+  Movie.allMovie = [];
   data.map((iteam) => {
     new Movie(iteam.title, iteam.poster_path, iteam.overview);
   });
