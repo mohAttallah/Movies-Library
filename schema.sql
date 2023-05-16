@@ -1,3 +1,4 @@
+--create table
 CREATE TABLE IF NOT EXISTS movie_libarys (
     id serial primary key, 
     title varchar(255),
