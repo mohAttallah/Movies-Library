@@ -1,10 +1,10 @@
-create table if not exists movie_libarys (
+CREATE TABLE IF NOT EXISTS movie_libarys (
     id serial primary key, 
     title varchar(255),
     poster_path varchar(10000),
-    image varchar(255)
+    image varchar(255),
+    comments varchar(10000)
 );
 
-insert into movie_libarys(title, poster_path,image) values('test' ,'anything', ' http://mohAttallah.com')
-UPDATE movie_libarys SET comments = 'new comments' WHERE id = movie_id;
-DELETE FROM movie_libarys WHERE id = movie_id;
+
+INSERT INTO movie_libarys (title, poster_path,image, comments) VALUES ('test', 'anything', 'http://mohAttallah.com', 'Nice Movie');

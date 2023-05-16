@@ -182,12 +182,13 @@ function handleMovieDB(req, res, next) {
 
 function handleAddMovieDB(req, res, next) {
   const userInput = req.body;
-  const sql = `insert into movie_libarys(title, poster_path, image) values($1, $2, $3) returning *`;
+  const sql = `insert into movie_libarys(title, poster_path, image, comments) values($1, $2, $3, $4) returning *`;
 
   const handleValueFromUser = [
     userInput.title,
     userInput.poster_path,
     userInput.image,
+    userInput.comments
   ];
 
   client
@@ -206,3 +207,48 @@ client.connect().then((con) => {
     console.log(`Up and Running on port ${PORT}`);
   });
 });
+
+// End lab 13 
+
+//------------------------------------------------
+// lab 14 start    
+
+
+app.get("/getMovies/:id", handleMovieByID);
+app.put("/UPDATE/:id",updateMovie );
+app.delete("/DELETE/:id",deleteMovie);
+
+// Get Movie by id 
+function handleMovieByID(req, res, next){
+
+  const id = req.params.id;
+  const sql = `select * from movie_libarys where id = ${id}  `;
+
+  client.query(sql).then(data => res.status(200).json(data.rows)).catch((err) => {
+      errorHandler(err, req, res, next);}
+    );
+}
+//update comments row from Movie libary by ID
+function updateMovie(req, res, next){
+
+  const id = req.params.id;
+  const newData  = req.body; 
+  const sql = `update movie_libarys set  comments=$1 where id = $2 returning *`;
+
+  const updatedValue = [newData.comments ,id];
+
+  client.query(sql, updatedValue).then(data =>res.status(202).json(data.rows)).catch((err) => {
+    errorHandler(err, req, res, next)});
+}
+
+//delate data forom Movie libary by ID
+function deleteMovie (req, res, next){
+  const id = req.params.id;
+  const sql =`DELETE from movie_libarys where id=${id}`; 
+  client.query(sql).then(() => res.status(204)).json({
+    "message" :`Row deleted Successfuly with id ${id}`
+  }).catch((err) => {
+    errorHandler(err, req, res, next)});
+}
+
+
